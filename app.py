@@ -5,6 +5,7 @@ from pages.signup import signup
 from pages.admin import admin
 from pages.tutor import tutor
 from pages.student import student
+from pages.chatbot import chatbot
 
 # Clear the sidebar
 st.sidebar.empty()
@@ -21,6 +22,9 @@ with main_container:
             tutor()
         elif st.session_state['pages'] == 'student':
             student()
+        elif st.session_state['pages'] == 'chatbot':
+            chatbot()
+
     else:
         if st.session_state['pages'] == 'login':
             login()
