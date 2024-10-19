@@ -11,4 +11,8 @@ def init_session():
         st.session_state.chat_history = []
     if "is_admin" not in st.session_state:
         st.session_state['is_admin'] = False
-
+        st.session_state["chat_history"] = []
+    if "system_prompt" not in st.session_state:
+        st.session_state["system_prompt"] = "You are helpful assistant"
+    if "file_path" not in st.session_state:
+        st.session_state["file_path"] = ""
