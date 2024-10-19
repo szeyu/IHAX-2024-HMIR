@@ -67,7 +67,6 @@ def student():
 
         chart = alt.Chart(learning_df).mark_area(
             line={'color': 'darkblue'},
-            line={'color': 'darkblue'},
             color=alt.Gradient(
                 gradient='linear',
                 
