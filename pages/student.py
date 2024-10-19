@@ -7,7 +7,7 @@ from utils.logout_widget import logout_widget
 users_df = pd.read_csv('database/users.csv')
 tutors_df = pd.read_csv('database/tutor.csv')
 
-merged_df = pd.merge(tutors_df, users_df, left_on='id', right_on='userID', how='left')
+merged_df = pd.merge(tutors_df, users_df, left_on='userID', right_on='userID', how='left')
 
 def student():
     st.title("Welcome, Student!")
@@ -15,7 +15,7 @@ def student():
 
     learning_data = {
         "Week": [f"Week {i}" for i in range(1, 13)],
-        "Learning Hours": np.random.randint(5, 20, size=12),  
+        "Learning Hours": np.random.randint(5, 20, size=12),
     }
     learning_df = pd.DataFrame(learning_data)
 
@@ -43,19 +43,22 @@ def student():
             padding: 15px;
             margin-bottom: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: #fff;
-            transition: transform 0.2s; /* Smooth scaling effect */
+            background-color: #f9f9f9;
+            transition: transform 0.2s; 
         }
         .border-container:hover {
-            transform: scale(1.02); /* Slightly enlarge on hover */
+            transform: scale(1.02); 
         }
         .tutor-info {
-            color: #333; /* Darker text color for better readability */
+            color: #333; 
         }
         .analytics-info {
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
+        }
+        .analytic-card:hover {
+            transform: scale(1.02); 
         }
         .analytic-card {
             background-color: #f9f9f9;
@@ -64,28 +67,29 @@ def student():
             padding: 20px;
             margin: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            flex: 1 1 200px; /* Adjusts the size */
-            max-width: 300px; /* Maximum width of each card */
+            flex: 1 1 200px; 
+            max-width: 300px; 
             text-align: center;
+            transition: transform 0.2s; 
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
-    # Home Page
+    # Home Page 
     with selected_tab[0]:
         st.subheader("Learning Time Analytics")
 
         chart = alt.Chart(learning_df).mark_area(
-            line={'color': 'darkblue'}, 
+            line={'color': 'darkblue'},
             color=alt.Gradient(
                 gradient='linear',
-                stops=[alt.GradientStop(color='#FFB3BA', offset=0),  
-                       alt.GradientStop(color='#FFDFBA', offset=0.2),  
-                       alt.GradientStop(color='#FFFFBA', offset=0.4), 
-                       alt.GradientStop(color='#BAFFC9', offset=0.6), 
-                       alt.GradientStop(color='#BAE1FF', offset=0.8),  
+                stops=[alt.GradientStop(color='#FFB3BA', offset=0),
+                       alt.GradientStop(color='#FFDFBA', offset=0.2),
+                       alt.GradientStop(color='#FFFFBA', offset=0.4),
+                       alt.GradientStop(color='#BAFFC9', offset=0.6),
+                       alt.GradientStop(color='#BAE1FF', offset=0.8),
                        alt.GradientStop(color='#B3BAFF', offset=1)]
             )
         ).encode(
@@ -98,7 +102,6 @@ def student():
 
         st.altair_chart(chart, use_container_width=True)
 
-        # Analyzation section
         total_hours = learning_df["Learning Hours"].sum()
         average_hours = learning_df["Learning Hours"].mean()
         max_hours = learning_df["Learning Hours"].max()
@@ -106,12 +109,11 @@ def student():
 
         st.markdown("<h4 style='text-align: center;'>Learning Statistics</h4>", unsafe_allow_html=True)
 
-        # Create a container for the analytics cards
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.markdown(f"<div class='analytic-card'><strong>Total Learning Hours:</strong><br>{total_hours}</div>", unsafe_allow_html=True)
-        
+
         with col2:
             st.markdown(f"<div class='analytic-card'><strong>Average Learning Hours:</strong><br>{average_hours:.2f}</div>", unsafe_allow_html=True)
 
@@ -121,7 +123,6 @@ def student():
         with col4:
             st.markdown(f"<div class='analytic-card'><strong>Min Learning Hours:</strong><br>{min_hours}</div>", unsafe_allow_html=True)
 
-        # Provide feedback based on average hours
         if average_hours < 10:
             st.write("You may want to increase your learning time to meet your goals!")
         else:
@@ -136,10 +137,10 @@ def student():
 
         search_query = st.text_input("Search Tutor by Name", placeholder="e.g., Ali bin Abu")
 
+        filtered_tutors = merged_df.copy()
+
         if selected_grades:
-            filtered_tutors = merged_df[merged_df["grade"].isin(selected_grades)]
-        else:
-            filtered_tutors = merged_df
+            filtered_tutors = filtered_tutors[filtered_tutors["grade"].isin(selected_grades)]
 
         if selected_subjects:
             filtered_tutors = filtered_tutors[filtered_tutors["subject"].isin(selected_subjects)]
