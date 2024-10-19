@@ -8,6 +8,9 @@ def init_session():
     if "userID" not in st.session_state:
         st.session_state['userID'] = ''
     if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    if "is_admin" not in st.session_state:
+        st.session_state['is_admin'] = False
         st.session_state["chat_history"] = []
     if "system_prompt" not in st.session_state:
         st.session_state["system_prompt"] = "You are helpful assistant"
