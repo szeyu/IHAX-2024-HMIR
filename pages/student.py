@@ -70,11 +70,7 @@ def student():
             line={'color': 'darkblue'},
             color=alt.Gradient(
                 gradient='linear',
-                stops=[alt.GradientStop(color='#FFB3BA', offset=0),
-                       alt.GradientStop(color='#FFDFBA', offset=0.2),
-                       alt.GradientStop(color='#FFFFBA', offset=0.4),
-                       alt.GradientStop(color='#BAFFC9', offset=0.6),
-                       alt.GradientStop(color='#BAE1FF', offset=0.8),
+                
                 stops=[alt.GradientStop(color='#FFB3BA', offset=0),
                        alt.GradientStop(color='#FFDFBA', offset=0.2),
                        alt.GradientStop(color='#FFFFBA', offset=0.4),
@@ -171,5 +167,4 @@ def student():
         else:
             st.write("No tutors available for the selected grade, subject, or name.")
 
-if __name__ == "__main__":
-    student()
+
