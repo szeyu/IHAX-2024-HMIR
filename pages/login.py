@@ -14,8 +14,9 @@ def login():
         if not user.empty:
             st.session_state['authenticated'] = True
             st.session_state['pages'] = user.iloc[0]['role']
+            st.session_state['userID'] = user.iloc[0]['userID']
             st.success(f"Logged in as {username}")
-            print(f"Logged in as {username}")
+            print(f"Logged in as {username} with userID={st.session_state['userID']}")
             st.rerun()
         else:
             st.error("Invalid username or password")
