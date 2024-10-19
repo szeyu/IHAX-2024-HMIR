@@ -1,59 +1,44 @@
 import streamlit as st
-from jamaibase import protocol as p
-import time
+from langchain.document_loaders import PyPDFLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import DocArrayInMemorySearch
+from langchain.llms import OpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.callbacks.base import BaseCallbackHandler
+import dotenv
+dotenv.load_dotenv()
 
+class StreamHandler(BaseCallbackHandler):
+    def __init__(self, container, initial_text=""):
+        self.container = container
+        self.text = initial_text
 
-def create_chat_table(jamai, knowledge_base_id):
-    try:
-        with st.spinner("Creating Chat Table..."):
-            table = jamai.create_chat_table(
-                p.ChatTableSchemaCreate(
-                    id=f"chat-rag-{int(time.time())}",
-                    cols=[
-                        p.ColumnSchemaCreate(id="User", dtype=p.DtypeCreateEnum.str_),
-                        p.ColumnSchemaCreate(
-                            id="AI",
-                            dtype=p.DtypeCreateEnum.str_,
-                            gen_config=p.ChatRequest(
-                                model="ellm/meta-llama/Llama-3.1-8B-Instruct",
-                                messages=[p.ChatEntry.system(st.session_state["system_prompt"])],
-                                rag_params=p.RAGParams(
-                                    table_id=knowledge_base_id,
-                                    k=5,
-                                ),
-                                temperature=0.1,
-                                top_p=0.1,
-                                max_tokens=1024,
-                            ).model_dump(),
-                        ),
-                    ],
-                )
-            )
-        st.success("Successfully created Chat Table")
-        return table.id
-    except Exception as e:
-        st.error(f"An error occurred while creating the chat table: {str(e)}")
-        return None
+    def on_llm_new_token(self, token: str, **kwargs) -> None:
+        self.text += token
+        self.container.markdown(self.text + "▌")
 
-def ask_question(jamai, chat_table_id, question):
-    completion = jamai.add_table_rows(
-        "chat",
-        p.RowAddRequest(
-            table_id=chat_table_id,
-            data=[dict(User=question)],
-            stream=True,
-        ),
-    )
+def load_pdf_and_create_qa_chain():
+    if 'qa_chain' not in st.session_state:
+        file_path = st.session_state['file_path']
+        loader = PyPDFLoader(file_path=file_path)
+        documents = loader.load()
 
-    full_response = ""
-    for chunk in completion:
-        if chunk.output_column_name != "AI":
-            continue
-        if isinstance(chunk, p.GenTableStreamReferences):
-            pass
-        else:
-            full_response += chunk.text
-            yield full_response
+        embeddings = OpenAIEmbeddings()
+        vector_store = DocArrayInMemorySearch.from_documents(documents, embeddings)
+
+        memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+        streaming_llm = OpenAI(streaming=True, callbacks=[StreamingStdOutCallbackHandler()], temperature=0)
+
+        qa_chain = ConversationalRetrievalChain.from_llm(
+            llm=streaming_llm,
+            retriever=vector_store.as_retriever(),
+            memory=memory
+        )
+
+        st.session_state['qa_chain'] = qa_chain
 
 def chatbot():
     st.title("AI-Powered Chatbot")
@@ -64,14 +49,8 @@ def chatbot():
             st.session_state["pages"] = "student"
             st.rerun()
 
-    # Create chat table if not already created
-    if "chat_table_id" not in st.session_state:
-        chat_table_id = create_chat_table(st.session_state.jamai_client, st.session_state["knowledge_base_id"])
-        if chat_table_id:
-            st.session_state.chat_table_id = chat_table_id
-        else:
-            st.error("Failed to create chat table. Please try again.")
-            return
+    # Load PDF and create QA chain
+    load_pdf_and_create_qa_chain()
 
     # Chat history
     if "chat_history" not in st.session_state:
@@ -96,17 +75,19 @@ def chatbot():
 
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
-            full_response = ""
-            for response in ask_question(st.session_state.jamai_client, st.session_state.chat_table_id, question):
-                message_placeholder.markdown(response + "▌")
-                full_response = response
-            message_placeholder.markdown(full_response)
-        st.session_state.chat_history.append({"role": "assistant", "content": full_response})
+            stream_handler = StreamHandler(message_placeholder)
+
+            result = st.session_state['qa_chain'](
+                {"question": question},
+                callbacks=[stream_handler]
+            )
+            response = result['answer']
+
+            message_placeholder.markdown(response)
+        st.session_state.chat_history.append({"role": "assistant", "content": response})
 
     # Clear chat button
     if st.button("Clear Chat"):
         st.session_state.chat_history = []
+        st.session_state['qa_chain'] = None  # Reset the QA chain
         st.rerun()
-
-if __name__ == "__main__":
-    chatbot()
