@@ -166,6 +166,10 @@ def student():
 
                 if st.button(f"Start Chat with {tutor['username']}", key=f"chat_{index}"):
                     st.success(f"Connecting to {tutor['username']}'s chatbot...")
+                    st.session_state["file_path"] = tutor["file_path"]
+                    st.session_state["system_prompt"] = tutor["system_prompt"]
+                    st.session_state["pages"] = "chatbot"
+                    st.rerun()
 
         else:
             st.write("No tutors available for the selected grade, subject, or name.")
