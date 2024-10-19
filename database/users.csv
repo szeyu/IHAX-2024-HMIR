@@ -3,3 +3,6 @@ userID,username,password,role
 2,user,user,user
 3,tutor,tutor,tutor
 4,student1,student1,student
+5,zec,zec,student
+6,tan,tan,tutor
+7,vone,vone,tutor
