@@ -49,17 +49,58 @@ def student():
     selected_tab = st.tabs(tabs)
 
     # Styles
+
     st.markdown(
         """
         <style>
-        .title-style { font-size:40px; color:#ff4b4b; font-weight: bold; }
-        .border-container { border: 1px solid #FF4B4B; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); background-color: #fff; transition: transform 0.2s; }
-        .border-container:hover { transform: scale(1.02); }
-        .tutor-info { color: #333; }
+        .title-style {
+            font-size:40px;
+            color:#ff4b4b;  
+            font-weight: bold;
+        }
+        .custom-border {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f7f7f7;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .border-container {
+            border: 1px solid #FF4B4B; 
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            transition: transform 0.2s; 
+        }
+        .border-container:hover {
+            transform: scale(1.02); 
+        }
+        .tutor-info {
+            color: #333; 
+        }
+        .analytics-info {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .analytic-card {
+            background-color: #f9f9f9;
+            border: 1px solid #FF4B4B;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex: 1 1 200px; 
+            max-width: 300px; 
+            text-align: center;
+        }
         </style>
         """,
         unsafe_allow_html=True
     )
+
 
     # Learning Analytics Tab
     with selected_tab[0]:
@@ -91,13 +132,16 @@ def student():
         # Displaying statistics
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.markdown(f"<div class='analytic-card'><strong>Total Learning Hours:</strong><br>{total_hours}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='analytic-card'><strong>Total Learning Hours:</strong><br>{total_hours}</div>", unsafe_allow_html=True)
+            
         with col2:
-            st.markdown(f"<div class='analytic-card'><strong>Average Learning Hours:</strong><br>{average_hours:.2f}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='analytic-card'><strong>Average Learning Hours:</strong><br>{average_hours:.2f}</div>", unsafe_allow_html=True)
+
         with col3:
-            st.markdown(f"<div class='analytic-card'><strong>Max Learning Hours:</strong><br>{max_hours}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='analytic-card'><strong>Max Learning Hours:</strong><br>{max_hours}</div>", unsafe_allow_html=True)
+
         with col4:
-            st.markdown(f"<div class='analytic-card'><strong>Min Learning Hours:</strong><br>{min_hours}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='analytic-card'><strong>Min Learning Hours:</strong><br>{min_hours}</div>", unsafe_allow_html=True)
 
     # Find Tutor Tab
     with selected_tab[1]:
@@ -107,7 +151,6 @@ def student():
         selected_subjects = st.multiselect("Select Subjects", merged_df["subject"].unique())
         search_query = st.text_input("Search Tutor by Name", placeholder="e.g., Ali bin Abu")
 
-        # Filter tutors based on grade, subject, or search query
         if selected_grades:
             filtered_tutors = merged_df[merged_df["grade"].isin(selected_grades)]
         else:
