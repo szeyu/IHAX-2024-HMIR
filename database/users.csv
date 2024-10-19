@@ -5,4 +5,6 @@ userID,username,password,role
 4,student1,student1,student
 5,vone,vone,tutor
 6,tan,tan,tutor
-7,zec,zec,student
+7,vone,vone,tutor
+8,Lily,lily,tutor
+9,admin1,admin1,admin
