@@ -1,18 +1,27 @@
 import streamlit as st
 
 def init_session():
+    """
+    Initialize the session state to handle user authentication and other session data.
+    """
     if "authenticated" not in st.session_state:
-        st.session_state['authenticated'] = False
+        st.session_state["authenticated"] = False
+
     if "pages" not in st.session_state:
-        st.session_state['pages'] = 'login'
+        st.session_state["pages"] = "login"
+
     if "userID" not in st.session_state:
-        st.session_state['userID'] = ''
+        st.session_state["userID"] = ""
+
     if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-    if "is_admin" not in st.session_state:
-        st.session_state['is_admin'] = False
         st.session_state["chat_history"] = []
-    if "system_prompt" not in st.session_state:
-        st.session_state["system_prompt"] = "You are helpful assistant"
-    if "file_path" not in st.session_state:
-        st.session_state["file_path"] = ""
+
+    if "message_count" not in st.session_state:
+        st.session_state["message_count"] = 0
+
+    if "rating_given" not in st.session_state:
+        st.session_state["rating_given"] = False
+
+    if "show_rating_prompt" not in st.session_state:
+        st.session_state["show_rating_prompt"] = False
+
