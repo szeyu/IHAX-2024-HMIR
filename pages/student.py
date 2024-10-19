@@ -117,6 +117,7 @@ def student():
         if search_query:
             filtered_tutors = filtered_tutors[filtered_tutors["username"].str.contains(search_query, case=False)]
 
+        filtered_tutors = filtered_tutors[filtered_tutors["status"] == "approved"]
         filtered_tutors = filtered_tutors.sort_values(by="avg_rating", ascending=False)
 
         if not filtered_tutors.empty:
