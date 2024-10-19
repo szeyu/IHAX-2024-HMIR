@@ -1,11 +1,6 @@
 import streamlit as st
 import random
 
-# Initialize session state variables
-def initialize_session_state():
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
 # Simple function to provide yes/no responses
 def simple_yes_no_response():
     return random.choice(["Yes", "No"])
@@ -13,9 +8,12 @@ def simple_yes_no_response():
 # Main app function
 def chatbot():
     st.title("Simple Yes/No Chatbot")
-
-    # Initialize session state
-    initialize_session_state()
+    
+    # a button to go back
+    with st.sidebar:
+        if(st.button("Back")):
+            st.session_state["pages"] = "student"
+            st.rerun()
 
     # If the chat has been cleared, reset the chat history
     if "clear_chat" in st.session_state and st.session_state.clear_chat:
@@ -51,6 +49,6 @@ def chatbot():
                 st.markdown(response)
 
     # Clear chat button
-    if st.button("Clear Chat"):
+    if st.button("Double Click to Clear Chat"):
         st.session_state.clear_chat = True  # Set the flag to clear the chat
         st.session_state.chat_history = []  # Clear the chat history
