@@ -1,2 +1,3 @@
 id,filename,subject,description,grade,upload_date,avg_rating,num_ratings,system_prompt,file_path,userID,status,admin_decision_date
 1,plants.pdf,Science,plant related,Primary 1,2024-10-19 19:17:43,0.0,0,You are the Science teacher,uploads\plants.pdf,10,approved,2024-10-19 19:24:32
+2,Introduction to Algebra.pdf,Math,Algebra KSSM Form 1,Secondary 1,2024-10-19 20:29:59,0.0,0,You are the Math teacher,uploads\Introduction to Algebra.pdf,5,approved,2024-10-19 20:30:16
