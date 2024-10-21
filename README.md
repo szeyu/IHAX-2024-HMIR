@@ -1,5 +1,9 @@
 # Hackathon Project for IHAX2024
 
+## Pitch Deck
+[Canva | HMIR Scholar Pitch Deck](https://www.canva.com/design/DAGT_B_Hd90/CatUwwum7jXPZKmK2iylng/view?utm_content=DAGT_B_Hd90&utm_campaign=designshare&utm_medium=link&utm_source=editor)
+
+
 # Project Setup
 
 Follow these steps to set up the project.
@@ -27,7 +31,12 @@ conda activate myenv
 pip install -r requirements.txt
 ```
 
-## 4. Run the Streamlit App
+## 4. Put your Open AI keys to your `.env` File
+```
+OPENAI_API_KEY=<KEY>
+```
+
+## 5. Run the Streamlit App
 ```
 streamlit run app.py
 ```
